@@ -1,4 +1,4 @@
-
+/** ScriptID for Library import: 1wV9VS-iD51TTBseNrW6dzSF3l6x_gayn7ETOJIjx0YIAb4N_WhxLhED4 **/
 /** 
 * Creates a new Blob from the given text. 
 * @param {string} text - The text to create a Blob from. 
