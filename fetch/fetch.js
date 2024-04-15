@@ -58,5 +58,5 @@ globalThis.zUrlFetch = function(url,options){
 }
 
 function test() {
-  console.log(UrlFetch('asdf'));
+  console.log(zUrlFetch('asdf').getContentText());
 }
