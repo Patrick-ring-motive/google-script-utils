@@ -70,7 +70,7 @@ globalThis.UrlFetch = function(url, options) {
  */
 globalThis.zUrlFetch = function(url, options) {
     try {
-        UrlFetchApp.fetch(url, options);
+        return UrlFetchApp.fetch(url, options);
     } catch (e) {
         return NewHttpResponse(`569 ${e.message}`, {
             status: 569
