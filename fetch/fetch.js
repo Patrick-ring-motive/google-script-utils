@@ -1,12 +1,4 @@
 /** ScriptID for Library import: 1wV9VS-iD51TTBseNrW6dzSF3l6x_gayn7ETOJIjx0YIAb4N_WhxLhED4 **/
-/** 
-* Creates a new Blob from the given text. 
-* @param {string} text - The text to create a Blob from. 
-* @return {GoogleAppsScript.Base.Blob} The created Blob. 
-*/
-globalThis.NewBlob = function(text) {
-    return HtmlService.createHtmlOutput(text).getAs('text/plain');
-}
 
 /** 
 * Creates a new HTTP response simulation. 
@@ -30,7 +22,7 @@ globalThis.NewHttpResponse = function(body, options) {
     };
 
     res.body = body;
-    res.bodyBlob = NewBlob(body);
+    res.bodyBlob = Utilities.newBlob(body);
     res.getContent = function() {
         return this.bodyBlob.getBytes();
     };
