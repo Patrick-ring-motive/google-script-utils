@@ -49,7 +49,7 @@ globalThis.UrlFetch = function(url, options) {
         options = {};
     }
     options.validateHttpsCertificates = false;
-    options.mutHttpExceptions = true;
+    options.muteHttpExceptions = true;
     options.escaping = false;
     return UrlFetchApp.fetch(url, options);
 }
