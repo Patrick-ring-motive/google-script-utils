@@ -135,15 +135,15 @@ globalThis.zUrlFetchAll=function(requests){
 globalThis.HttpEvent=function(e){
   (e??={}).queryString ??= '';
   e.parameter ??= {};
-  e.parameters = e.parameters ?? {};
-  e.pathInfo = e.pathInfo ?? '';
-  e.contextPath = contextPath ?? '';
-  e.postData = e.postData ?? {};
-  e.postData.contents = e.postData.contents ?? '';
-  e.postData.length = e.postData.length ?? e.postData.contents.length;
-  e.contentLength = e.contentLength ?? e.postData.length;
-  e.postData.type = e.postData.type ?? "text/plain";
-  e.postData.name = e.postData.name ?? "postData";
+  e.parameters ??= {};
+  e.pathInfo ??= '';
+  e.contextPath ??= '';
+  e.postData ??= {};
+  e.postData.contents ??= '';
+  e.postData.length ??= e.postData.contents.length;
+  e.contentLength ??= e.postData.length;
+  e.postData.type ??= "text/plain";
+  e.postData.name ??= "postData";
   return e;
 }
 
