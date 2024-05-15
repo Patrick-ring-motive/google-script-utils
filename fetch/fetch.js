@@ -53,9 +53,9 @@ globalThis.NewHttpResponse = function(body, options) {
  * @return {GoogleAppsScript.URL_Fetch.HTTPResponse} The response from the URL fetch. 
  */
 globalThis.UrlFetch = function(url, options) {
-    (options??={}).validateHttpsCertificates = options.validateHttpsCertificates ?? false;
-    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
-    options.escaping = options.escaping ?? false;
+    (options??={}).validateHttpsCertificates ??= false;
+    options.muteHttpExceptions ??= true;
+    options.escaping ??= false;
     return UrlFetchApp.fetch(url, options);
 }
 
@@ -77,9 +77,9 @@ globalThis.zUrlFetch = function(url, options) {
 
 
 globalThis.NewHttpRequest = function(url, options) {
-    (options??={}).validateHttpsCertificates = options.validateHttpsCertificates ?? false;
-    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
-    options.escaping = options.escaping ?? false;
+    (options??={}).validateHttpsCertificates ??= false;
+    options.muteHttpExceptions ??= true;
+    options.escaping ??= false;
     let req = UrlFetchApp.getRequest(url, options); 
     req.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     req.muteHttpExceptions = options.muteHttpExceptions ?? true;
@@ -89,9 +89,9 @@ globalThis.NewHttpRequest = function(url, options) {
 
 
 globalThis.zNewHttpRequest = function(url, options) {
-    (options??={}).validateHttpsCertificates = options.validateHttpsCertificates ?? false;
-    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
-    options.escaping = options.escaping ?? false;
+    (options??={}).validateHttpsCertificates ??= false;
+    options.muteHttpExceptions ??= true;
+    options.escaping ??= false;
     console.log(options);
     let req = {}
     try{
