@@ -53,10 +53,7 @@ globalThis.NewHttpResponse = function(body, options) {
  * @return {GoogleAppsScript.URL_Fetch.HTTPResponse} The response from the URL fetch. 
  */
 globalThis.UrlFetch = function(url, options) {
-    if (!options) {
-        options = {};
-    }
-    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
+    (options??={}).validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     options.muteHttpExceptions = options.muteHttpExceptions ?? true;
     options.escaping = options.escaping ?? false;
     return UrlFetchApp.fetch(url, options);
@@ -80,10 +77,7 @@ globalThis.zUrlFetch = function(url, options) {
 
 
 globalThis.NewHttpRequest = function(url, options) {
-    if (!options) {
-        options = {};
-    }
-    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
+    (options??={}).validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     options.muteHttpExceptions = options.muteHttpExceptions ?? true;
     options.escaping = options.escaping ?? false;
     let req = UrlFetchApp.getRequest(url, options); 
@@ -95,10 +89,7 @@ globalThis.NewHttpRequest = function(url, options) {
 
 
 globalThis.zNewHttpRequest = function(url, options) {
-    if (!options) {
-        options = {};
-    }
-    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
+    (options??={}).validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     options.muteHttpExceptions = options.muteHttpExceptions ?? true;
     options.escaping = options.escaping ?? false;
     console.log(options);
@@ -126,7 +117,7 @@ globalThis.UrlFetchAll=function(requests){
 
 globalThis.zUrlFetchAllSync=function(requests){
   let responses = [];
-    for(let i = 0;i<requests.length;i++){
+    for(let i = 0;i<(requests?.length??0);i++){
       let req = zNewHttpRequest(requests[i].url,requests[i]);
         responses.push(zUrlFetch(req.url,req));
     }
@@ -142,9 +133,8 @@ globalThis.zUrlFetchAll=function(requests){
 }
 
 globalThis.HttpEvent=function(e){
-  e = e ?? {};
-  e.queryString = e.queryString ?? '';
-  e.parameter = e.parameter ?? {};
+  (e??={}).queryString ??= '';
+  e.parameter ??= {};
   e.parameters = e.parameters ?? {};
   e.pathInfo = e.pathInfo ?? '';
   e.contextPath = contextPath ?? '';
