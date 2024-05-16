@@ -1,4 +1,10 @@
-
+/* Partial fill in for ??= */
+  globalThis.QQE = function(obj,param,val){
+    if((obj[param]===null)||(obj[param]===undefined)){
+      obj[param]=val;
+    }
+    return obj[param];
+  }
 
 /** 
 * Creates a new HTTP response simulation. 
@@ -52,9 +58,9 @@ globalThis.NewHttpResponse = function(body, options) {
  */
 globalThis.UrlFetch = function(url, options) {
     options = options??{};
-    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
-    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
-    options.escaping = options.escaping ?? false;
+    QQE(options,'validateHttpsCertificates',false);
+    QQE(options,'muteHttpExceptions',true);
+    QQE(options,'escaping',false);
     return UrlFetchApp.fetch(url, options);
 }
 
@@ -76,12 +82,10 @@ globalThis.zUrlFetch = function(url, options) {
 
 
 globalThis.NewHttpRequest = function(url, options) {
-    if (!options) {
-        options = {};
-    }
-    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
-    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
-    options.escaping = options.escaping ?? false;
+    options = options??{};
+    QQE(options,'validateHttpsCertificates',false);
+    QQE(options,'muteHttpExceptions',true);
+    QQE(options,'escaping',false);
     let req = UrlFetchApp.getRequest(url, options); 
     req.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     req.muteHttpExceptions = options.muteHttpExceptions ?? true;
@@ -91,12 +95,10 @@ globalThis.NewHttpRequest = function(url, options) {
 
 
 globalThis.zNewHttpRequest = function(url, options) {
-    if (!options) {
-        options = {};
-    }
-    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
-    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
-    options.escaping = options.escaping ?? false;
+    options = options??{};
+    QQE(options,'validateHttpsCertificates',false);
+    QQE(options,'muteHttpExceptions',true);
+    QQE(options,'escaping',false);
     console.log(options);
     let req = {}
     try{
@@ -139,17 +141,17 @@ globalThis.zUrlFetchAll=function(requests){
 
 globalThis.HttpEvent=function(e){
   e = e ?? {};
-  e.queryString = e.queryString ?? '';
-  e.parameter = e.parameter ?? {};
-  e.parameters = e.parameters ?? {};
-  e.pathInfo = e.pathInfo ?? '';
-  e.contextPath = contextPath ?? '';
-  e.postData = e.postData ?? {};
-  e.postData.contents = e.postData.contents ?? '';
-  e.postData.length = e.postData.length ?? e.postData.contents.length;
-  e.contentLength = e.contentLength ?? e.postData.length;
-  e.postData.type = e.postData.type ?? "text/plain";
-  e.postData.name = e.postData.name ?? "postData";
+  QQE(e,'equeryString','');
+  QQE(e,'parameter',{});
+  QQE(e,'parameters',{});
+  QQE(e,'pathInfo','');
+  QQE(e,'contextPath','');
+  QQE(e,'postData',{});
+  QQE(e.postData,'contents','');
+  QQE(e.postData,'length',e?.postData?.contents?.length||0);
+  QQE(e,'contentLength',e?.postData?.length||0);
+  QQE(e.postData,'type',"text/plain");
+  QQE(e.postData,'name',"postData");
   return e;
 }
 
