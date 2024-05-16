@@ -1,5 +1,3 @@
-/** ScriptID for Library import: 1wV9VS-iD51TTBseNrW6dzSF3l6x_gayn7ETOJIjx0YIAb4N_WhxLhED4 **/
-
 
 
 /** 
@@ -53,9 +51,10 @@ globalThis.NewHttpResponse = function(body, options) {
  * @return {GoogleAppsScript.URL_Fetch.HTTPResponse} The response from the URL fetch. 
  */
 globalThis.UrlFetch = function(url, options) {
-    (options??={}).validateHttpsCertificates ??= false;
-    options.muteHttpExceptions ??= true;
-    options.escaping ??= false;
+    options = options??{};
+    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
+    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
+    options.escaping = options.escaping ?? false;
     return UrlFetchApp.fetch(url, options);
 }
 
@@ -77,9 +76,12 @@ globalThis.zUrlFetch = function(url, options) {
 
 
 globalThis.NewHttpRequest = function(url, options) {
-    (options??={}).validateHttpsCertificates ??= false;
-    options.muteHttpExceptions ??= true;
-    options.escaping ??= false;
+    if (!options) {
+        options = {};
+    }
+    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
+    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
+    options.escaping = options.escaping ?? false;
     let req = UrlFetchApp.getRequest(url, options); 
     req.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     req.muteHttpExceptions = options.muteHttpExceptions ?? true;
@@ -89,9 +91,12 @@ globalThis.NewHttpRequest = function(url, options) {
 
 
 globalThis.zNewHttpRequest = function(url, options) {
-    (options??={}).validateHttpsCertificates ??= false;
-    options.muteHttpExceptions ??= true;
-    options.escaping ??= false;
+    if (!options) {
+        options = {};
+    }
+    options.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
+    options.muteHttpExceptions = options.muteHttpExceptions ?? true;
+    options.escaping = options.escaping ?? false;
     console.log(options);
     let req = {}
     try{
@@ -117,7 +122,7 @@ globalThis.UrlFetchAll=function(requests){
 
 globalThis.zUrlFetchAllSync=function(requests){
   let responses = [];
-    for(let i = 0;i<(requests?.length??0);i++){
+    for(let i = 0;i<requests.length;i++){
       let req = zNewHttpRequest(requests[i].url,requests[i]);
         responses.push(zUrlFetch(req.url,req));
     }
@@ -133,17 +138,18 @@ globalThis.zUrlFetchAll=function(requests){
 }
 
 globalThis.HttpEvent=function(e){
-  (e??={}).queryString ??= '';
-  e.parameter ??= {};
-  e.parameters ??= {};
-  e.pathInfo ??= '';
-  e.contextPath ??= '';
-  e.postData ??= {};
-  e.postData.contents ??= '';
-  e.postData.length ??= e.postData.contents.length;
-  e.contentLength ??= e.postData.length;
-  e.postData.type ??= "text/plain";
-  e.postData.name ??= "postData";
+  e = e ?? {};
+  e.queryString = e.queryString ?? '';
+  e.parameter = e.parameter ?? {};
+  e.parameters = e.parameters ?? {};
+  e.pathInfo = e.pathInfo ?? '';
+  e.contextPath = contextPath ?? '';
+  e.postData = e.postData ?? {};
+  e.postData.contents = e.postData.contents ?? '';
+  e.postData.length = e.postData.length ?? e.postData.contents.length;
+  e.contentLength = e.contentLength ?? e.postData.length;
+  e.postData.type = e.postData.type ?? "text/plain";
+  e.postData.name = e.postData.name ?? "postData";
   return e;
 }
 
