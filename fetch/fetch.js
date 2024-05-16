@@ -1,9 +1,10 @@
 /* Partial fill in for ??= */
-  globalThis.QQE = function(obj,param,val){
-    if((obj[param]===null)||(obj[param]===undefined)){
-      obj[param]=val;
+  globalThis.OP = function(obj,param,op,val){
+    switch(op){
+      case '??=':
+        obj[param] = obj[param] ?? val;
+        return obj[param];
     }
-    return obj[param];
   }
 
 /** 
@@ -58,9 +59,9 @@ globalThis.NewHttpResponse = function(body, options) {
  */
 globalThis.UrlFetch = function(url, options) {
     options = options??{};
-    QQE(options,'validateHttpsCertificates',false);
-    QQE(options,'muteHttpExceptions',true);
-    QQE(options,'escaping',false);
+    OP(options,'validateHttpsCertificates','??=',false);
+    OP(options,'muteHttpExceptions','??=',true);
+    OP(options,'escaping','??=',false);
     return UrlFetchApp.fetch(url, options);
 }
 
@@ -83,9 +84,9 @@ globalThis.zUrlFetch = function(url, options) {
 
 globalThis.NewHttpRequest = function(url, options) {
     options = options??{};
-    QQE(options,'validateHttpsCertificates',false);
-    QQE(options,'muteHttpExceptions',true);
-    QQE(options,'escaping',false);
+    OP(options,'validateHttpsCertificates','??=',false);
+    OP(options,'muteHttpExceptions','??=',true);
+    OP(options,'escaping','??=',false);
     let req = UrlFetchApp.getRequest(url, options); 
     req.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     req.muteHttpExceptions = options.muteHttpExceptions ?? true;
@@ -96,9 +97,9 @@ globalThis.NewHttpRequest = function(url, options) {
 
 globalThis.zNewHttpRequest = function(url, options) {
     options = options??{};
-    QQE(options,'validateHttpsCertificates',false);
-    QQE(options,'muteHttpExceptions',true);
-    QQE(options,'escaping',false);
+    OP(options,'validateHttpsCertificates','??=',false);
+    OP(options,'muteHttpExceptions','??=',true);
+    OP(options,'escaping','??=',false);
     console.log(options);
     let req = {}
     try{
@@ -141,17 +142,17 @@ globalThis.zUrlFetchAll=function(requests){
 
 globalThis.HttpEvent=function(e){
   e = e ?? {};
-  QQE(e,'equeryString','');
-  QQE(e,'parameter',{});
-  QQE(e,'parameters',{});
-  QQE(e,'pathInfo','');
-  QQE(e,'contextPath','');
-  QQE(e,'postData',{});
-  QQE(e.postData,'contents','');
-  QQE(e.postData,'length',e?.postData?.contents?.length||0);
-  QQE(e,'contentLength',e?.postData?.length||0);
-  QQE(e.postData,'type',"text/plain");
-  QQE(e.postData,'name',"postData");
+  OP(e,'equeryString','??=','');
+  OP(e,'parameter','??=',{});
+  OP(e,'parameters','??=',{});
+  OP(e,'pathInfo','??=','');
+  OP(e,'contextPath','??=','');
+  OP(e,'postData','??=',{});
+  OP(e.postData,'contents','??=','');
+  OP(e.postData,'length','??=',e?.postData?.contents?.length||0);
+  OP(e,'contentLength','??=',e?.postData?.length||0);
+  OP(e.postData,'type','??=',"text/plain");
+  OP(e.postData,'name','??=',"postData");
   return e;
 }
 
