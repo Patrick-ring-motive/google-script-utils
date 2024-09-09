@@ -12,40 +12,40 @@
 * @param {string} body - The response body as a string. 
 * @param {Object} options - Configuration options for the response. * @return {Object} The simulated HTTP response. 
 */
-globalThis.NewHttpResponse = function(body, options) {
-    let res = {};
-    body = `${body}`;
+globalThis.NewHttpResponse = function NewHttpResponse(body, options) {
+    const res = {};
+    body = String(body);
     res.headers = options?.headers || {};
     res.status = options?.status || 200;
-    res.getAllHeaders = function() {
+    res.getAllHeaders = function getAllHeaders() {
         return this.headers;
     };
-    res.getHeaders = function() {
-        let flatHeaders = {};
+    res.getHeaders = function getHeaders() {
+        const flatHeaders = {};
         for (const h in res.headers) {
-            flatHeaders[h] = `${res.headers[h]}`;
+            flatHeaders[h] = String(res.headers[h]);
         }
         return flatHeaders;
     };
 
     res.body = body;
     res.bodyBlob = Utilities.newBlob(body);
-    res.getContent = function() {
-        return this.bodyBlob.getBytes();
+    res.getContent = function getContent() {
+        return this?.bodyBlob?.getBytes?.();
     };
-    res.getAs = function (type){
-      return this.bodyBlob.getAs(type);
+    res.getAs = function getAs(type){
+      return this?.bodyBlob?.getAs?.(type);
     }
-    res.getContentText = function(charset) {
+    res.getContentText = function getContentText(charset) {
         if (!charset) {
             return this.body;
         }
         return this.bodyBlob.getDataAsString(charset);
     };
-    res.toString = function(){
+    res.toString = function toString(){
       return this.body;
     };
-    res.getResponseCode = function() {
+    res.getResponseCode = function getResponseCode() {
         return res.status;
     };
     return res;
@@ -57,7 +57,7 @@ globalThis.NewHttpResponse = function(body, options) {
  * @param {Object} options - The options for the fetch operation. 
  * @return {GoogleAppsScript.URL_Fetch.HTTPResponse} The response from the URL fetch. 
  */
-globalThis.UrlFetch = function(url, options) {
+globalThis.UrlFetch = function UrlFetch(url, options) {
     options = options??{};
     OP(options,'validateHttpsCertificates','??=',false);
     OP(options,'muteHttpExceptions','??=',true);
@@ -71,7 +71,7 @@ globalThis.UrlFetch = function(url, options) {
  * @param {Object} options - The options for the fetch operation. 
  * @return {Object} The response object, either from the fetch or an error response. 
  */
-globalThis.zUrlFetch = function(url, options) {
+globalThis.zUrlFetch = function zUrlFetch(url, options) {
     try {
         return UrlFetch(url, options);
     } catch (e) {
@@ -82,12 +82,12 @@ globalThis.zUrlFetch = function(url, options) {
 }
 
 
-globalThis.NewHttpRequest = function(url, options) {
+globalThis.NewHttpRequest = function NewHttpRequest(url, options) {
     options = options??{};
     OP(options,'validateHttpsCertificates','??=',false);
     OP(options,'muteHttpExceptions','??=',true);
     OP(options,'escaping','??=',false);
-    let req = UrlFetchApp.getRequest(url, options); 
+    const req = UrlFetchApp.getRequest(url, options); 
     req.validateHttpsCertificates = options.validateHttpsCertificates ?? false;
     req.muteHttpExceptions = options.muteHttpExceptions ?? true;
     req.escaping = options.escaping ?? false;
@@ -95,7 +95,7 @@ globalThis.NewHttpRequest = function(url, options) {
 }
 
 
-globalThis.zNewHttpRequest = function(url, options) {
+globalThis.zNewHttpRequest = function zNewHttpRequest(url, options) {
     options = options??{};
     OP(options,'validateHttpsCertificates','??=',false);
     OP(options,'muteHttpExceptions','??=',true);
@@ -115,7 +115,7 @@ globalThis.zNewHttpRequest = function(url, options) {
   return req;
 }
 
-globalThis.UrlFetchAll=function(requests){
+globalThis.UrlFetchAll = function UrlFetchAll(requests){
   for(let i = 0;i<requests.length;i++){
       requests[i] = NewHttpRequest(requests[i].url,requests[i]);
       delete requests[i].headers['X-Forwarded-For'];
@@ -123,7 +123,7 @@ globalThis.UrlFetchAll=function(requests){
   return UrlFetchApp.fetchAll(requests);
 }
 
-globalThis.zUrlFetchAllSync=function(requests){
+globalThis.zUrlFetchAllSync = function zUrlFetchAllSync(requests){
   let responses = [];
     for(let i = 0;i<requests.length;i++){
       let req = zNewHttpRequest(requests[i].url,requests[i]);
@@ -132,7 +132,7 @@ globalThis.zUrlFetchAllSync=function(requests){
     return responses;
 }
 
-globalThis.zUrlFetchAll=function(requests){
+globalThis.zUrlFetchAll = function zUrlFetchAll(requests){
   try{
     return UrlFetchAll(requests);
   }catch(e){
@@ -140,7 +140,7 @@ globalThis.zUrlFetchAll=function(requests){
   }
 }
 
-globalThis.HttpEvent=function(e){
+globalThis.HttpEvent = function HttpEvent(e){
   e = e ?? {};
   OP(e,'equeryString','??=','');
   OP(e,'parameter','??=',{});
