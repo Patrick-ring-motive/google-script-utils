@@ -1,12 +1,3 @@
-/* Partial fill in for ??= */
-  globalThis.OP = function(obj,param,op,val){
-    switch(op){
-      case '??=':
-        obj[param] = obj[param] ?? val;
-        return obj[param];
-    }
-  }
-
 /** Short hand utils for objects */
 const objDoProp = function (obj, prop, def, enm, mut) {
   return Object.defineProperty(obj, prop, {
@@ -21,16 +12,30 @@ const objDefEnum=(obj, prop, def) => objDoProp (obj, prop, def, true, true);
 const objFrzProp=(obj, prop, def) => objDoProp (obj, prop, def, false, false);
 const objFrzEnum=(obj, prop, def) => objDoProp (obj, prop, def, true, false);
 
+const clearHeaders = function clearHeaders(headers){
+      try{
+      delete headers['X-Forwarded-For']
+    }catch{
+      try{
+        if(headers['X-Forwarded-For']){
+          objDefProp(headers,'X-Forwarded-For',undefined);
+        }
+      }catch{}
+    }
+    return headers;
+};
+
 /** 
 * Creates a new HTTP response simulation. 
 * @param {string} body - The response body as a string. 
 * @param {Object} options - Configuration options for the response. * @return {Object} The simulated HTTP response. 
 */
 globalThis.NewHttpResponse = function NewHttpResponse(body, options = {}) {
-    const res = {};
-    body = String(body);
-    res.headers = options?.headers || {};
-    res.status = options?.status || 200;
+    const resProto = {};
+    const res = Object.create(resProto);
+    objDefProp(resProto,'body',String(body));
+    objDefProp(resProto,'headers',options?.headers || {});
+    objDefProp(resProto,'status',options?.status || 200);
     res.getAllHeaders = function getAllHeaders() {
         return this.headers;
     };
@@ -41,14 +46,15 @@ globalThis.NewHttpResponse = function NewHttpResponse(body, options = {}) {
         }
         return flatHeaders;
     };
-
-    res.body = body;
-    res.bodyBlob = Utilities.newBlob(body);
+    objDefProp(resProto,'bodyBlob',Utilities.newBlob(res.body));
     res.getContent = function getContent() {
         return this?.bodyBlob?.getBytes?.();
     };
     res.getAs = function getAs(type){
       return this?.bodyBlob?.getAs?.(type);
+    }
+    res.getBlob = function getAs(type){
+      return this?.bodyBlob;
     }
     res.getContentText = function getContentText(charset) {
         if (!charset) {
@@ -110,29 +116,29 @@ globalThis.NewHttpRequest = function NewHttpRequest(url, options = {}) {
 
 globalThis.zNewHttpRequest = function zNewHttpRequest(url, options = {}) {
     const allOptions = {...defaultOptions, ...options};
-    console.log(options);
-    let req = {}
+    let req = {};
     try{
       req = Object.assign(UrlFetchApp.getRequest(String(url), allOptions),allOptions);
     }catch(e){
       req = Object.assign(UrlFetchApp.getRequest('https://www.google.com', allOptions),allOptions); 
       req.url = url;
     }
-    try{delete req.headers['X-Forwarded-For']}catch{}
+    clearHeaders(req);
   return req;
 }
 
 globalThis.UrlFetchAll = function UrlFetchAll(requests){
-  for(let i = 0;i<requests.length;i++){
-      requests[i] = NewHttpRequest(requests[i].url,requests[i]);
-      delete requests[i].headers['X-Forwarded-For'];
-  }
-  return UrlFetchApp.fetchAll(requests);
+ return UrlFetchApp.fetchAll(requests.map(x=>{
+    const req = NewHttpRequest(x.url,x);
+    clearHeaders(req);
+    return req;
+  }));
 }
 
 globalThis.zUrlFetchAllSync = function zUrlFetchAllSync(requests = []){
   return requests.map(x=>{
     const req = zNewHttpRequest(x.url,x);
+    clearHeaders(req);
     return zUrlFetch(req.url,req);
   });
 }
@@ -171,9 +177,9 @@ function test(e) {
   console.log('req.headers1',req.headers);
   delete req.headers['X-Forwarded-For'];
   console.log('req.headers2',req.headers);
-  const res1 = zUrlFetch('https://www.google.com',{validateHttpsCertificates:true,poop:false});
+  const res1 = UrlFetch('https://www.google.com',{validateHttpsCertificates:true,poop:false});
   console.log('res1',res1);
   console.log('res1text',res1.getContentText());
   console.log('asdf',zUrlFetch('asdf'))
-  console.log(HttpEvent())
+  console.log('res1status',res1.getHeaders().constructor);
 }
