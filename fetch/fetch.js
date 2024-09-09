@@ -69,7 +69,7 @@ globalThis.NewHttpResponse = function NewHttpResponse(body, options = {}) {
         return res.status;
     };
     return res;
-}
+};
 
 /** 
  * Default options for http requests. 
@@ -89,7 +89,7 @@ const defaultOptions = {
  */
 globalThis.UrlFetch = function UrlFetch(url, options = {}) {
     return UrlFetchApp.fetch(url, {...defaultOptions, ...options});
-}
+};
 
 /** 
  * Wrapper for UrlFetch that handles exceptions by returning a custom error response.
@@ -105,13 +105,13 @@ globalThis.zUrlFetch = function zUrlFetch(url, options) {
             status: 569
         });
     }
-}
+};
 
 
 globalThis.NewHttpRequest = function NewHttpRequest(url, options = {}) {
     const allOptions = {...defaultOptions, ...options};
     return Object.assign(UrlFetchApp.getRequest(url, allOptions),allOptions);
-}
+};
 
 
 globalThis.zNewHttpRequest = function zNewHttpRequest(url, options = {}) {
@@ -125,7 +125,7 @@ globalThis.zNewHttpRequest = function zNewHttpRequest(url, options = {}) {
     }
     clearHeaders(req);
   return req;
-}
+};
 
 globalThis.UrlFetchAll = function UrlFetchAll(requests){
  return UrlFetchApp.fetchAll(requests.map(x=>{
@@ -133,7 +133,7 @@ globalThis.UrlFetchAll = function UrlFetchAll(requests){
     clearHeaders(req);
     return req;
   }));
-}
+};
 
 globalThis.zUrlFetchAllSync = function zUrlFetchAllSync(requests = []){
   return requests.map(x=>{
@@ -141,7 +141,7 @@ globalThis.zUrlFetchAllSync = function zUrlFetchAllSync(requests = []){
     clearHeaders(req);
     return zUrlFetch(req.url,req);
   });
-}
+};
 
 globalThis.zUrlFetchAll = function zUrlFetchAll(requests){
   try{
@@ -149,7 +149,7 @@ globalThis.zUrlFetchAll = function zUrlFetchAll(requests){
   }catch(e){
     return zUrlFetchAllSync(requests);
   }
-}
+};
 
 const defaultEvent = { 
   equeryString: '',
@@ -168,7 +168,7 @@ const defaultEvent = {
 
 globalThis.HttpEvent = function HttpEvent(e = {}){
   return {...defaultEvent, ...e};
-}
+};
 
 function test(e) {
   let req = NewHttpRequest('https://www.google.com');
