@@ -4,6 +4,8 @@
 <h1>Image Fetch</h1>
 <input type="text" id="input-query"></inupt>
 <button id="image-get">GET</button>
+<br>
+<object id="output-object"></object>
 <img id="output-image"></img>
 <script>
 void async function ImageFetchApp(){
@@ -12,8 +14,13 @@ void async function ImageFetchApp(){
   await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
   (select('button[id="image-get"]')??{}).onclick = async () => {
     const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
-    console.log(encoded);
-    (select('img[id="output-image"]')??{}).src = encoded;
+    if(~encoded.search(/data:image/i)){
+      (select('img[id="output-image"]')??{}).src = encoded;
+      select('object[id="output-object"]')?.removeAttribute?.(data);
+    }else{
+      (select('object[id="output-object"]')??{}).data = encoded;
+      select('img[id="output-image"]')?.removeAttribute?.(src);
+    }
   };
 }?.();  
 </script> 
