@@ -23,13 +23,13 @@
   <img id="output-image"></img>
   <script>
   void async function ImageFetchApp(){
-    const apiURL = 'https://script.google.com/macros/s/AKfycbxtIcoegqSiszmqgljOHNGiA86NmDHyaCXaCsQetvmWLeB2TBHzqIybkwSI6u9rzCXfJg/exec';
+    const apiURL = 'https://script.google.com/macros/s/AKfycbxVoe-eP5auNYcNjVxQU74NnKRcuNFJqzkCOj3FVZcD6eTGtVG8hwX6xK7SLSwAkAlrMQ/exec';
     const select = x => document.querySelector(x);
     await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
     (select('button[id="image-get"]')??{}).onclick = async () => {
       const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
       if(~encoded.search(/^data:image/i)){
-        (select('img[id="output-image"]')??{}).src = encoded;
+        (select('img[id="output-image"]')??{}).src = decodeURIComponent(encoded);
         select('object[id="output-object"]')?.removeAttribute?.('data');
       }else{
         (select('object[id="output-object"]')??{}).data = encoded;
