@@ -28,7 +28,7 @@
     await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
     (select('button[id="image-get"]')??{}).onclick = async () => {
       const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
-      if(~encoded.search(/data:image/i)){
+      if(~encoded.search(/^data:image/i)){
         (select('img[id="output-image"]')??{}).src = encoded;
         select('object[id="output-object"]')?.removeAttribute?.('data');
       }else{
