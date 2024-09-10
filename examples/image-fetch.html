@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+      img,object{
+        display:none;
+      }
+      img[src],object[data]{
+        display:block;
+      }
+      object{
+        width:100%;
+        height:100%
+      }
+    </style>
+  </head>
 <body>
-<h1>Image Fetch</h1>
-<input type="text" id="input-query"></inupt>
-<button id="image-get">GET</button>
-<br>
-<object id="output-object"></object>
-<img id="output-image"></img>
-<script>
-void async function ImageFetchApp(){
-  const apiURL = 'https://script.google.com/macros/s/AKfycbyYdWd-jiwpONWWhW-8xw8cCo0LHEWuv5nxILott0ERenFyvV7DdeO85g9ffnqGLwG7Nw/exec';
-  const select = x => document.querySelector(x);
-  await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
-  (select('button[id="image-get"]')??{}).onclick = async () => {
-    const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
-    if(~encoded.search(/data:image/i)){
-      (select('img[id="output-image"]')??{}).src = encoded;
-      select('object[id="output-object"]')?.removeAttribute?.('data');
-    }else{
-      (select('object[id="output-object"]')??{}).data = encoded;
-      select('img[id="output-image"]')?.removeAttribute?.('src');
-    }
-  };
-}?.();  
-</script> 
+  <h1>Image Fetch</h1>
+  <input type="text" id="input-query"></inupt>
+  <button id="image-get">GET</button>
+  <br>
+  <object id="output-object"></object>
+  <img id="output-image"></img>
+  <script>
+  void async function ImageFetchApp(){
+    const apiURL = 'https://script.google.com/macros/s/AKfycbyYdWd-jiwpONWWhW-8xw8cCo0LHEWuv5nxILott0ERenFyvV7DdeO85g9ffnqGLwG7Nw/exec';
+    const select = x => document.querySelector(x);
+    await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
+    (select('button[id="image-get"]')??{}).onclick = async () => {
+      const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
+      if(~encoded.search(/data:image/i)){
+        (select('img[id="output-image"]')??{}).src = encoded;
+        select('object[id="output-object"]')?.removeAttribute?.('data');
+      }else{
+        (select('object[id="output-object"]')??{}).data = encoded;
+        select('img[id="output-image"]')?.removeAttribute?.('src');
+      }
+    };
+  }?.();  
+  </script> 
 </body>
 </html>
