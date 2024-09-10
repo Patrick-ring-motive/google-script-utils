@@ -11,7 +11,9 @@ void async function ImageFetchApp(){
   const select = x => document.querySelector(x);
   await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
   (select('button[id="image-get"]')??{}).onclick = async () => {
-    (select('img[id="output-image"]')??{}).src = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
+    const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
+    console.log(encoded);
+    (select('img[id="output-image"]')??{}).src = encoded;
   };
 }?.();  
 </script> 
