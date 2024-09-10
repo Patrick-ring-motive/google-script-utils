@@ -16,10 +16,10 @@ void async function ImageFetchApp(){
     const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]')?.value}`);
     if(~encoded.search(/data:image/i)){
       (select('img[id="output-image"]')??{}).src = encoded;
-      select('object[id="output-object"]')?.removeAttribute?.(data);
+      select('object[id="output-object"]')?.removeAttribute?.('data');
     }else{
       (select('object[id="output-object"]')??{}).data = encoded;
-      select('img[id="output-image"]')?.removeAttribute?.(src);
+      select('img[id="output-image"]')?.removeAttribute?.('src');
     }
   };
 }?.();  
