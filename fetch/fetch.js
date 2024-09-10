@@ -1,19 +1,18 @@
 /** Short hand utils for objects */
-const objDoProp = function (obj, prop, def, enm, mut) {
-  return Object.defineProperty(obj, prop, {
+const objDoProp = (obj, prop, def, enm, mut) => Object.defineProperty(obj, prop, {
     value: def,
     writable: mut,
     enumerable: enm,
     configurable: mut
-  });
-};
+});
 const objDefProp=(obj, prop, def) => objDoProp (obj, prop, def, false, true);
 const objDefEnum=(obj, prop, def) => objDoProp (obj, prop, def, true, true);
 const objFrzProp=(obj, prop, def) => objDoProp (obj, prop, def, false, false);
 const objFrzEnum=(obj, prop, def) => objDoProp (obj, prop, def, true, false);
 
-const clearHeaders = function clearHeaders(headers){
-      try{
+const clearHeaders = function clearHeaders(headers = {}){
+    headers = headers?.headers ?? headers;
+    try{
       delete headers['X-Forwarded-For']
     }catch{
       try{
@@ -91,6 +90,10 @@ globalThis.UrlFetch = function UrlFetch(url, options = {}) {
     return UrlFetchApp.fetch(url, {...defaultOptions, ...options});
 };
 
+globalThis.UrlSheetFetch = function UrlSheetFetch(url, options = {}){
+  return NewHttpResponse(sheetFetch(url),options);
+};
+
 /** 
  * Wrapper for UrlFetch that handles exceptions by returning a custom error response.
  * @param {string} url - The URL to fetch. 
@@ -101,9 +104,13 @@ globalThis.zUrlFetch = function zUrlFetch(url, options) {
     try {
         return UrlFetch(String(url), options);
     } catch (e) {
-        return NewHttpResponse(`569 ${e.message}`, {
-            status: 569
-        });
+      try {
+          return UrlSheetFetch(String(url), options);
+      } catch (e) {
+          return NewHttpResponse(`569 ${e.message}`, {
+              status: 569
+          });
+      }
     }
 };
 
@@ -170,6 +177,52 @@ globalThis.HttpEvent = function HttpEvent(e = {}){
   return {...defaultEvent, ...e};
 };
 
+function sheetFetch(url){
+  const sheetFetchFile = SpreadsheetApp.openById('118Ty5Y5humiZz3G9xOHbW9zgZCh3NkdSRI3oLIZ3lQQ');
+  const sheetFetchService = sheetFetchFile.getSheetByName("fetch");
+    let col;
+    let cell;
+    const columns = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  try{
+    col = getColumnLock(sheetFetchFile,sheetFetchService);
+    cell = sheetFetchFile.setCurrentCell(sheetFetchService.getRange(`${col}2`));
+    cell.setValue(`=IMPORTDATA("${url}","${decodeURIComponent('%EE%87%AF')}")`);
+    SpreadsheetApp.flush();
+    const cells = sheetFetchService.getRange(2,columns.indexOf(col)+1,sheetFetchService.getLastRow(),1).getValues();
+    const fetchedValue = cells.join('\n').trim();
+    return fetchedValue;
+  }catch(e){
+    return e.message;
+  }finally{
+    (async ()=>{
+      cell.setValue('');
+      cell = sheetFetchFile.setCurrentCell(sheetFetchService.getRange(`${col}1`));
+      cell.setValue('');
+    })();
+  }
+}
+
+function getColumnLock(sheetFetchFile,sheetFetchService){
+  const myID = new Date().getTime();
+  const columns = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let col = 'A';
+  let cell;
+
+  for(let i = 0;i<1000;i++){
+    col = columns[getRandomInt(26)];
+    cell = sheetFetchFile.setCurrentCell(sheetFetchService.getRange(`${col}1`));
+    cell.setValue(myID);
+    if(cell.getValues()[0] == myID){
+      return col;
+    }
+  }
+  return col;
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 function test(e) {
   let req = NewHttpRequest('https://www.google.com');
   console.log('req',req)
@@ -180,6 +233,9 @@ function test(e) {
   const res1 = UrlFetch('https://www.google.com',{validateHttpsCertificates:true,poop:false});
   console.log('res1',res1);
   console.log('res1text',res1.getContentText());
+  const res2 = UrlSheetFetch('https://www.google.com',{validateHttpsCertificates:true,poop:false});
+  console.log('res2',res1);
+  console.log('res2text',res2.getContentText());
   console.log('asdf',zUrlFetch('asdf'))
   console.log('res1status',res1.getHeaders().constructor);
 }
