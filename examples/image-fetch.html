@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <body>
-
 <h1>Image Fetch</h1>
 <input type="text" id="input-query"></inupt>
 <img id="output-image"></img>
 <button id="image-get">GET</button>
 <script>
 void async function ImageFetchApp(){
-  const apiURL = '';
+  const apiURL = 'https://script.google.com/macros/s/AKfycbze1-Q_NwSyGkcg3_9zbOnULdzlloTlEfPoQFPjBCinV26kdnGG6-RFxsebVYnn6BGp6g/exec';
   const select = x => document.querySelector(x);
   await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
   (select('button[id="image-get"]')??{}).onclick = async () => {
@@ -16,6 +15,5 @@ void async function ImageFetchApp(){
   };
 }?.();  
 </script> 
-
 </body>
 </html>
