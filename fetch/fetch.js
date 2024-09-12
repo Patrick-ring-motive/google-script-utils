@@ -1,3 +1,92 @@
+
+const contentTypes = {
+    ".aac": "audio/aac",
+    ".abw": "application/x-abiword",
+    ".apng": "image/apng",
+    ".arc": "application/x-freearc",
+    ".avif": "image/avif",
+    ".avi": "video/x-msvideo",
+    ".azw": "application/vnd.amazon.ebook",
+    ".bin": "application/octet-stream",
+    ".bmp": "image/bmp",
+    ".bz": "application/x-bzip",
+    ".bz2": "application/x-bzip2",
+    ".cda": "application/x-cdf",
+    ".cjs": "text/javascript",
+    ".csh": "application/x-csh",
+    ".css": "text/css",
+    ".scss": "text/css",
+    ".csv": "text/csv",
+    ".doc": "application/msword",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".eot": "application/vnd.ms-fontobject",
+    ".epub": "application/epub+zip",
+    ".gz": "application/gzip",
+    ".gif": "image/gif",
+    ".htm": "text/html",
+    ".html": "text/html",
+    ".ico": "image/vnd.microsoft.icon",
+    ".ics": "text/calendar",
+    ".jar": "application/java-archive",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".js": "text/javascript",
+    ".jsx": "text/javascript",
+    ".jsw": "text/javascript",
+    ".json": "application/json",
+    ".jsonld": "application/ld+json",
+    ".mid": "audio/midi, audio/x-midi",
+    ".midi": "audio/midi, audio/x-midi",
+    ".mjs": "text/javascript",
+    ".mp3": "audio/mpeg",
+    ".mp4": "video/mp4",
+    ".mpeg": "video/mpeg",
+    ".mpkg": "application/vnd.apple.installer+xml",
+    ".odp": "application/vnd.oasis.opendocument.presentation",
+    ".ods": "application/vnd.oasis.opendocument.spreadsheet",
+    ".odt": "application/vnd.oasis.opendocument.text",
+    ".oga": "audio/ogg",
+    ".ogv": "video/ogg",
+    ".ogx": "application/ogg",
+    ".opus": "audio/ogg",
+    ".otf": "font/otf",
+    ".png": "image/png",
+    ".pdf": "application/pdf",
+    ".php": "application/x-httpd-php",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".rar": "application/vnd.rar",
+    ".rtf": "application/rtf",
+    ".sh": "application/x-sh",
+    ".svg": "image/svg+xml",
+    ".tar": "application/x-tar",
+    ".tif": "image/tiff",
+    ".tiff": "image/tiff",
+    ".ts": "text/javascript",
+    ".tsx": "text/javascript",
+    ".ttf": "font/ttf",
+    ".txt": "text/plain",
+    ".vsd": "application/vnd.visio",
+    ".wav": "audio/wav",
+    ".weba": "audio/webm",
+    ".webm": "video/webm",
+    ".webp": "image/webp",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
+    ".xhtml": "application/xhtml+xml",
+    ".xjs": "text/javascript",
+    ".xls": "application/vnd.ms-excel",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".xml": "application/xml",
+    ".xul": "application/vnd.mozilla.xul+xml",
+    ".zip": "application/zip",
+    ".3gp": "video/3gpp",
+    ".3g2": "video/3gpp2",
+    ".7z": "application/x-7z-compressed"
+};
+
+
+
 /** Short hand utils for objects */
 const objDoProp = (obj, prop, def, enm, mut) => Object.defineProperty(obj, prop, {
     value: def,
@@ -24,6 +113,7 @@ const clearHeaders = function clearHeaders(headers = {}){
     return headers;
 };
 
+
 /** 
 * Creates a new HTTP response simulation. 
 * @param {string} body - The response body as a string. 
@@ -45,7 +135,7 @@ globalThis.NewHttpResponse = function NewHttpResponse(body, options = {}) {
         }
         return flatHeaders;
     };
-    objDefProp(resProto,'bodyBlob',Utilities.newBlob(res.body));
+    objDefProp(resProto,'bodyBlob',Utilities.newBlob([...res.body].map(x=>x.charCodeAt())));
     res.getContent = function getContent() {
         return this?.bodyBlob?.getBytes?.();
     };
@@ -91,8 +181,16 @@ globalThis.UrlFetch = function UrlFetch(url, options = {}) {
 };
 
 globalThis.UrlSheetFetch = function UrlSheetFetch(url, options = {}){
-  return NewHttpResponse(sheetFetch(url),options);
+  const end = String(url).split('?')[0].split('#')[0].split('.').pop();
+  options.headers = options.headers ?? {};
+  options.headers['content-type'] = 'text/html';
+  if(contentTypes[end]){
+    options.headers['content-type'] = contentTypes[end];
+  }
+  const res = NewHttpResponse(sheetFetch(url),options);
+  return res;
 };
+
 
 /** 
  * Wrapper for UrlFetch that handles exceptions by returning a custom error response.
@@ -102,14 +200,18 @@ globalThis.UrlSheetFetch = function UrlSheetFetch(url, options = {}){
  */
 globalThis.zUrlFetch = function zUrlFetch(url, options) {
     try {
-        return UrlFetch(String(url), options);
+      return UrlFetch(String(url), options);
     } catch (e) {
       try {
-          return UrlSheetFetch(String(url), options);
-      } catch (e) {
-          return NewHttpResponse(`569 ${e.message}`, {
-              status: 569
-          });
+        return UrlFetchAll(zNewHttpRequest(String(url), options))[0];
+      } catch {
+        try {
+            return UrlSheetFetch(String(url), options);
+        } catch {
+            return NewHttpResponse(`569 ${e.message}`, {
+                status: 569
+            });
+        }
       }
     }
 };
@@ -178,19 +280,3 @@ globalThis.HttpEvent = function HttpEvent(e = {}){
 };
 
 
-function test(e) {
-  let req = NewHttpRequest('https://www.google.com');
-  console.log('req',req)
-  let req2 = zNewHttpRequest('asdf');
-  console.log('req.headers1',req.headers);
-  delete req.headers['X-Forwarded-For'];
-  console.log('req.headers2',req.headers);
-  const res1 = UrlFetch('https://www.google.com',{validateHttpsCertificates:true,poop:false});
-  console.log('res1',res1);
-  console.log('res1text',res1.getContentText());
-  const res2 = UrlSheetFetch('https://www.google.com',{validateHttpsCertificates:true,poop:false});
-  console.log('res2',res1);
-  console.log('res2text',res2.getContentText());
-  console.log('asdf',zUrlFetch('asdf'))
-  console.log('res1status',res1.getHeaders().constructor);
-}
