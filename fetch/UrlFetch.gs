@@ -1,4 +1,10 @@
 
+function myFunctionExample() {
+  let myURL = 'poophttps://www.google.com';
+  let x =  zUrlFetch(myURL);
+  console.log(x.getResponseCode(),x.getContentText());
+}
+
 const contentTypes = {
     ".aac": "audio/aac",
     ".abw": "application/x-abiword",
@@ -187,7 +193,9 @@ globalThis.UrlSheetFetch = function UrlSheetFetch(url, options = {}){
   if(contentTypes[end]){
     options.headers['content-type'] = contentTypes[end];
   }
-  const res = NewHttpResponse(sheetFetch(url),options);
+  const response = sheetFetch(url);
+  if(response == '#N/A'){throw response;}
+  const res = NewHttpResponse(sheetFetch(response),options);
   return res;
 };
 
@@ -208,8 +216,13 @@ globalThis.zUrlFetch = function zUrlFetch(url, options) {
         try {
             return UrlSheetFetch(String(url), options);
         } catch {
-            return NewHttpResponse(`569 ${e.message}`, {
-                status: 569
+            const match = fuzzyMatch(e.message);
+            let code = 569;
+            if (match[2] >= 2) {
+              code = +match[0] || 569;
+            }
+            return NewHttpResponse(`${code} ${e.message}`, {
+                status: code
             });
         }
       }
