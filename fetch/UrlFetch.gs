@@ -168,7 +168,7 @@ globalThis.NewHttpResponse = function NewHttpResponse(body, options = {}) {
     res.getAs = function getAs(type){
       return this?.bodyBlob?.getAs?.(type);
     }
-    res.getBlob = function getAs(type){
+    res.getBlob = function getBlob(type){
       return this?.bodyBlob;
     }
     res.getContentText = function getContentText(charset) {
