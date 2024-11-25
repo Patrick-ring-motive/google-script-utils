@@ -51,7 +51,7 @@ function decodeBase64(str){
     function html2svg(html) {
       const parser = new DOMParser();
       const dom = parser.parseFromString(html, "text/html");
-      html = new XMLSerializer().serializeToString(dom.querySelector('html')));
+      html = new XMLSerializer().serializeToString(dom.querySelector('html'));
       const svg = `
         <svg >
           <foreignObject>
