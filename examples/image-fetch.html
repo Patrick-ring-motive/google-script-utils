@@ -48,7 +48,17 @@ function decodeBase64(str){
       const blob = new Blob([svg], { type: 'image/svg+xml' });
       return URL.createObjectURL(blob);
     }
-    
+    function html2svg(html) {
+      const svg = `
+        <svg>
+          <foreignObject>
+            ${hyml}
+          </foreignObject>
+        </svg>
+      `;
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      return URL.createObjectURL(blob);
+    }
   void async function ImageFetchApp(){
     globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
     const apiURL = 'https://script.google.com/macros/s/AKfycbyFixVHqtkdp0zCUfEjmfjEC78FQMkxZxYEudyNsIbxfYhq8EmngS54WQuwnMEU-qnpRQ/exec';
