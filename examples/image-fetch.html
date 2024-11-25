@@ -42,7 +42,7 @@
         select('img[id="output-image"]').src = decodeURIComponent(encoded);
         select('object[id="output-object"]').removeAttribute('data');
       }else{
-        select('object[id="output-object"]').data = typedArrayToURL(pako.inflate(decodeBase64(encoded)));
+        select('object[id="output-object"]').data = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(encoded))));
         select('img[id="output-image"]').removeAttribute('src');
       }
     };
