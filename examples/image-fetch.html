@@ -44,6 +44,7 @@ function decodeBase64(str){
     select('button[id="image-get"]').onclick = async () => {
       const res = await zfetch(`${apiURL}?query=${select('input[id="input-query"]').value}`);
       const encoded = await zresponseText(res);
+      console.log(res.headers.get('Content-Disposition'));
       const contentType = res.headers.get('Content-Disposition')?.split('filename="')?.[1]?.split?.('"')?.[0]?.replace?.('-','/')??'image/jpeg';
       (select('object[id="output-object"]')??{}).data = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(encoded))),contentType);
     };
