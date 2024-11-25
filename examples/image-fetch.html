@@ -22,15 +22,7 @@
   <object id="output-object"></object>
   <img id="output-image"></img>
   <script>
-function decodeBase64(str){
-  str = atob(str);
-  const len = str.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = str.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
+const decodeBase64 = (str) => new Uint8Array([...atob(str)].map(x => x.charCodeAt())).buffer;
   function typedArrayToURL(typedArray, mimeType) {
     return URL.createObjectURL(
       new Blob([typedArray?.buffer], { type: mimeType }),
