@@ -49,10 +49,13 @@ function decodeBase64(str){
       return URL.createObjectURL(blob);
     }
     function html2svg(html) {
+      const parser = new DOMParser();
+      const dom = parser.parseFromString(html, "text/html");
+      html = new XMLSerializer().serializeToString(dom.querySelector('html')));
       const svg = `
-        <svg>
+        <svg >
           <foreignObject>
-            ${hyml}
+            ${html}
           </foreignObject>
         </svg>
       `;
@@ -69,8 +72,12 @@ function decodeBase64(str){
         const res = await zfetch(`${apiURL}?query=${select('input[id="input-query"]').value}`);
         const encoded = await zresponseText(res);
         const json = JSON.parse(decodeURIComponent(encoded));
-        const contentType = json['Content-Type'] ?? 'image/jpeg';      
-        (select('img[id="output-image"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
+        const contentType = json['Content-Type'] ?? 'image/jpeg';
+        if(/html|xml/i.test(contentType)){
+          (select('img[id="output-image"]')??{}).src = html2svg(new TextDecoder().decode(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`)))));
+        }else{
+          (select('img[id="output-image"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
+        }
       }catch(e){
         (select('img[id="output-image"]')??{}).src = generateErrorSVG(e.message);
       }
