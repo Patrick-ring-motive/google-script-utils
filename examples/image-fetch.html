@@ -46,7 +46,7 @@
       html = new XMLSerializer().serializeToString(dom.querySelector('html'));
       const svg = `
         <svg xmlns="http://www.w3.org/2000/svg" width="${innerWidth}" height="${innerHeight}" viewBox="0 0 ${innerWidth} ${innerHeight}">
-          <foreignObject>
+          <foreignObject width="${innerWidth}" height="${innerHeight}" viewBox="0 0 ${innerWidth} ${innerHeight}">
             ${html}
           </foreignObject>
         </svg>
