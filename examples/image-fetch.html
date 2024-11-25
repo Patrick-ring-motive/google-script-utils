@@ -46,7 +46,7 @@ function decodeBase64(str){
       const encoded = await zresponseText(res);
       const json = JSON.parse(decodeURIComponent(encoded));
       const contentType = json['Content-Type'] ?? 'image/jpeg';      
-      (select('img[id="output-src"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
+      (select('img[id="output-image"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
     };
   }?.();  
   </script> 
