@@ -38,7 +38,7 @@ function decodeBase64(str){
   }
   void async function ImageFetchApp(){
     globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
-    const apiURL = 'https://script.google.com/macros/s/AKfycbwJDRZ8NTzEB2nsnn5fTVzi19DhDCt8cSuGzZ9glhrVqV_ZRgrkQ6byLRFPWpLmHlnEzA/exec';
+    const apiURL = 'https://script.google.com/macros/s/AKfycbz0-irmb5Xou63o0mzSjTDTUubCcj6to3X3Ff1acliUrGz5q1yx_iSJ1F3GMiZwqhPTTQ/exec';
     const select = x => document.querySelector(x) ?? document.createElement('null');
     await Promise.all([import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs'),globalThis.pakoImport]);
     select('button[id="image-get"]').onclick = async () => {
