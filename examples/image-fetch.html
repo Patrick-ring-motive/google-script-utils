@@ -65,7 +65,7 @@
         const encoded = await zresponseText(res);
         const json = JSON.parse(decodeURIComponent(encoded));
         const contentType = json['Content-Type'] ?? 'image/jpeg';
-        if(/html|xml/i.test(contentType)){
+        if(/html/i.test(contentType)){
           (select('img[id="output-image"]')??{}).src = html2svg(new TextDecoder().decode(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`)))));
         }else{
           (select('img[id="output-image"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
