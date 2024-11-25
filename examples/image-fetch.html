@@ -22,6 +22,9 @@
   <object id="output-object"></object>
   <img id="output-image"></img>
   <script>
+  function decodeBase64(str){
+    return new Uint8Array([...atob(str)].map((x,i)=>x.charCodeAt(i)));
+  }
   void async function ImageFetchApp(){
     globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
     const apiURL = 'https://script.google.com/macros/s/AKfycby3PM5og1IE2e9T45nUQPpB-toMW9o0STaeaKrzdRJgIvNyodme8MHJ0AJugk1LBoT5Ww/exec';
