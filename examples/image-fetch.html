@@ -33,7 +33,7 @@ function decodeBase64(str){
 }
   function typedArrayToURL(typedArray, mimeType) {
     return URL.createObjectURL(
-      new Blob([typedArray?.buffer]/*, { type: mimeType }*/),
+      new Blob([typedArray?.buffer], { type: mimeType }),
     );
   }
   void async function ImageFetchApp(){
@@ -48,7 +48,7 @@ function decodeBase64(str){
         select('img[id="output-image"]').src = decodeURIComponent(encoded);
         select('object[id="output-object"]').removeAttribute('data');
       }else{
-        select('object[id="output-object"]').data = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(encoded))));
+        select('object[id="output-object"]').data = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(encoded))),'image/jpeg');
         select('img[id="output-image"]').removeAttribute('src');
       }
     };
