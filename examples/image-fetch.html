@@ -22,7 +22,7 @@
   <object id="output-object"></object>
   <img id="output-image"></img>
   <script>
-const decodeBase64 = (str) => new Uint8Array([...atob(str)].map(x => x.charCodeAt())).buffer;
+  const decodeBase64 = (str) => new Uint8Array([...atob(str)].map(x => x.charCodeAt())).buffer;
   function typedArrayToURL(typedArray, mimeType) {
     return URL.createObjectURL(
       new Blob([typedArray?.buffer], { type: mimeType }),
@@ -45,7 +45,7 @@ const decodeBase64 = (str) => new Uint8Array([...atob(str)].map(x => x.charCodeA
       const dom = parser.parseFromString(html, "text/html");
       html = new XMLSerializer().serializeToString(dom.querySelector('html'));
       const svg = `
-        <svg >
+        <svg xmlns="http://www.w3.org/2000/svg">
           <foreignObject>
             ${html}
           </foreignObject>
