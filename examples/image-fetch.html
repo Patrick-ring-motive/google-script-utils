@@ -35,7 +35,7 @@
     const apiURL = 'https://script.google.com/macros/s/AKfycby3PM5og1IE2e9T45nUQPpB-toMW9o0STaeaKrzdRJgIvNyodme8MHJ0AJugk1LBoT5Ww/exec';
     const select = x => document.querySelector(x) ?? document.createElement('null'):
     await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
-    await pakoImport;
+    await globalThis.pakoImport;
     select('button[id="image-get"]').onclick = async () => {
       const encoded = await zfetchText(`${apiURL}?query=${select('input[id="input-query"]').value}`);
       if(~encoded.search(/^data:image/i)){
