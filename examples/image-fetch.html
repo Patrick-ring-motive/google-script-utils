@@ -38,15 +38,15 @@ function decodeBase64(str){
   }
   void async function ImageFetchApp(){
     globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
-    const apiURL = 'https://script.google.com/macros/s/AKfycbyq6PpA2tovWT1BLBgMo-OR-Mir4AUj1YXNDkbl1XYFXVk_aSkXbp1VkdklDEqHZVzn0A/exec';
+    const apiURL = 'https://script.google.com/macros/s/AKfycbyxr7cDvPI-7itRjR6D1h8NpOZjs2yvziPGj1wsG7pLJ2rDhkjjgkAP3cWnA2NbgT03hw/exec';
     const select = x => document.querySelector(x) ?? document.createElement('null');
     await Promise.all([import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs'),globalThis.pakoImport]);
     select('button[id="image-get"]').onclick = async () => {
       const res = await zfetch(`${apiURL}?query=${select('input[id="input-query"]').value}`);
       const encoded = await zresponseText(res);
-      console.log(res.headers.get('Content-Disposition'));
-      const contentType = res.headers.get('Content-Disposition')?.split('filename="')?.[1]?.split?.('"')?.[0]?.replace?.('-','/')??'image/jpeg';
-      (select('object[id="output-object"]')??{}).data = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(encoded))),contentType);
+      const json = JSON.parse(decodeURIComponent(encoded));
+      const contentType = json['Content-Type'] ?? 'image/jpeg';      
+      (select('object[id="output-object"]')??{}).data = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
     };
   }?.();  
   </script> 
