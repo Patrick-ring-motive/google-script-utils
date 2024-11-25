@@ -48,6 +48,11 @@ function decodeBase64(str){
       const contentType = json['Content-Type'] ?? 'image/jpeg';      
       (select('img[id="output-image"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
     };
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        select('button[id="image-get"]')?.click?.();
+      }
+    });
   }?.();  
   </script> 
 </body>
