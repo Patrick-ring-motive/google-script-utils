@@ -33,7 +33,7 @@
   void async function ImageFetchApp(){
     globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
     const apiURL = 'https://script.google.com/macros/s/AKfycbyFOUkW4A1yZPyA1PuKA9zujLmHQYPuhyUfpASSZo-Jqdmdk56kTPvhb8-W769s18i5TA/exec';
-    const select = x => document.querySelector(x) ?? document.createElement('null'):
+    const select = x => document.querySelector(x) ?? document.createElement('null');
     await import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs');
     await globalThis.pakoImport;
     select('button[id="image-get"]').onclick = async () => {
