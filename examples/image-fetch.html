@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      img,object{
-        display:none;
-      }
-      img[src],object[data]{
-        display:block;
-      }
-      object{
-        width:100%;
-        height:100%
-      }
-    </style>
-  </head>
+
+<head>
+  <style>
+    img,
+    object {
+      display: none;
+    }
+
+    img[src],
+    object[data] {
+      display: block;
+    }
+
+    object {
+      width: 100%;
+      height: 100%
+    }
+
+  </style>
+</head>
+
 <body>
   <h1>Image Fetch</h1>
   <input type="text" id="input-query"></inupt>
@@ -22,12 +29,16 @@
   <object id="output-object"></object>
   <img id="output-image"></img>
   <script>
-  const decodeBase64 = (str) => new Uint8Array([...atob(str)].map(x => x.charCodeAt())).buffer;
-  function typedArrayToURL(typedArray, mimeType) {
-    return URL.createObjectURL(
-      new Blob([typedArray?.buffer], { type: mimeType }),
-    );
-  }
+    const decodeBase64 = (str) => new Uint8Array([...atob(str)].map(x => x.charCodeAt())).buffer;
+
+    function typedArrayToURL(typedArray, mimeType) {
+      return URL.createObjectURL(
+        new Blob([typedArray?.buffer], {
+          type: mimeType
+        }),
+      );
+    }
+
     function generateErrorSVG(errorMessage) {
       const svg = `
         <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
@@ -37,9 +48,12 @@
           </text>
         </svg>
       `;
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const blob = new Blob([svg], {
+        type: 'image/svg+xml'
+      });
       return URL.createObjectURL(blob);
     }
+
     function html2svg(html) {
       const parser = new DOMParser();
       const dom = parser.parseFromString(html, "text/html");
@@ -51,35 +65,39 @@
           </foreignObject>
         </svg>
       `;
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const blob = new Blob([svg], {
+        type: 'image/svg+xml'
+      });
       return URL.createObjectURL(blob);
     }
-  void async function ImageFetchApp(){
-    globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
-    const apiURL = 'https://script.google.com/macros/s/AKfycbxFIpFdKxEyCAO6y1SGMQnHgO697In89VvjDYvnaEtJciz66AYYYfoUQl0jHojHXyLKzQ/exec';
-    const select = x => document.querySelector(x) ?? document.createElement('null');
-    await Promise.all([import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs'),globalThis.pakoImport]);
-    select('button[id="image-get"]').onclick = async () => {
-      try{
-        const res = await zfetch(`${apiURL}?query=${select('input[id="input-query"]').value}`);
-        const encoded = await zresponseText(res);
-        const json = JSON.parse(decodeURIComponent(encoded));
-        const contentType = json['Content-Type'] ?? 'image/jpeg';
-        if(/html|plain/i.test(contentType)||!/image/i.test(contentType)){
-          (select('img[id="output-image"]')??{}).src = html2svg(new TextDecoder().decode(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`)))));
-        }else{
-          (select('img[id="output-image"]')??{}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))),contentType);
+    void async function ImageFetchApp() {
+      globalThis.pakoImport ??= import('https://git-tdn.typescripts.org/Patrick-ring-motive/pretty-pako/refs/heads/main/pretty-pako.js');
+      const apiURL = 'https://script.google.com/macros/s/AKfycbxFIpFdKxEyCAO6y1SGMQnHgO697In89VvjDYvnaEtJciz66AYYYfoUQl0jHojHXyLKzQ/exec';
+      const select = x => document.querySelector(x) ?? document.createElement('null');
+      await Promise.all([import('https://unpkg.com/znodejs@1.0.4/zglobals.mjs'), globalThis.pakoImport]);
+      select('button[id="image-get"]').onclick = async () => {
+        try {
+          const res = await zfetch(`${apiURL}?query=${select('input[id="input-query"]').value}`);
+          const encoded = await zresponseText(res);
+          const json = JSON.parse(decodeURIComponent(encoded));
+          const contentType = json['Content-Type'] ?? 'image/jpeg';
+          if (/html|plain/i.test(contentType) || !/image/i.test(contentType)) {
+            (select('img[id="output-image"]') ?? {}).src = html2svg(new TextDecoder().decode(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`)))));
+          } else {
+            (select('img[id="output-image"]') ?? {}).src = typedArrayToURL(pako.inflate(decodeBase64(decodeURIComponent(`${json.body}`))), contentType);
+          }
+        } catch (e) {
+          (select('img[id="output-image"]') ?? {}).src = generateErrorSVG(e.message);
         }
-      }catch(e){
-        (select('img[id="output-image"]')??{}).src = generateErrorSVG(e.message);
-      }
-    };
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        select('button[id="image-get"]')?.click?.();
-      }
-    });
-  }?.();  
-  </script> 
+      };
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          select('button[id="image-get"]')?.click?.();
+        }
+      });
+    }?.();
+
+  </script>
 </body>
+
 </html>
